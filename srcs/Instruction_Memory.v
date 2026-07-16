@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 module Instruction_Memory(
-    input rst, clk,
+    input rst,
     input [31:0] A,
     output [31:0] RD
     );
