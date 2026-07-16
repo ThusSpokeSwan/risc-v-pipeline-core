@@ -3,20 +3,37 @@
 module Execute_Cycle(
     input clk, rst,
     input RegWriteE, ResultSrcE, MemWriteE, BranchE, ALUSrcE,
-    input [2:0] ALUControlE,
-    input [31:0] RD1E, RD2E, PCE, ImmExtE, PCPlus4E,
+    input [2:0] ALUControlE, ForwardAE, ForwardBE,
+    input [31:0] RD1E, RD2E, PCE, ImmExtE, PCPlus4E, ResultW,
     input [4:0] RdE,
     output RegWriteM, ResultSrcM, MemWriteM, PCSrcE,
     output [31:0] ALUResultM, WriteDataM, PCPlus4M, PCTargetE,
     output [4:0] RdM
     );
     
-    wire [31:0] SrcAE, SrcBE, ALUResultE;
+    wire [31:0] SrcAE, SrcBE, SrcBE_interim ,ALUResultE;
     wire ZeroE;
 
     reg RegWriteE_reg, ResultSrcE_reg, MemWriteE_reg;
     reg [4:0] RdE_reg;
     reg[31:0] ALUResultE_reg, WriteDataE, PCPlus4E_reg;    
+        
+    MUX_3x1 MUX_SrcA(
+        .a(RD1E),
+        .b(ResultW),
+        .c(ALUResultM),
+        .s(ForwardAE),
+        .d(SrcAE)
+    );
+    
+    MUX_3x1 MUX_SrcB(
+        .a(RD2E),
+        .b(ResultW),
+        .c(ALUResultM),
+        .s(ForwardBE),
+        .d(SrcBE_interim)
+    );
+        
         
     MUX MUX_ALU(
         .a(RD2E),
@@ -58,7 +75,7 @@ module Execute_Cycle(
             ResultSrcE_reg <= ResultSrcE;
             MemWriteE_reg <= MemWriteE;
             ALUResultE_reg <= ALUResultE;
-            WriteDataE <= RD2E;
+            WriteDataE <= SrcBE_interim;
             RdE_reg <= RdE;
             PCPlus4E_reg <= PCPlus4E;
         end

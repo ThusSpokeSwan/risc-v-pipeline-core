@@ -7,7 +7,7 @@ module Decode_Cycle(
     output RegWriteE, ResultSrcE, MemWriteE, BranchE, ALUSrcE,
     output [2:0] ALUControlE,
     output [31:0] RD1E, RD2E, PCE, ImmExtE, PCPlus4E,
-    output [4:0] RdE
+    output [4:0] RdE, Rs1E, Rs2E
     );
     
     wire BranchD, ResultSrcD, MemWriteD, ALUSrcD, RegWriteD;
@@ -18,7 +18,7 @@ module Decode_Cycle(
     reg RegWriteD_reg, ResultSrcD_reg, MemWriteD_reg, BranchD_reg, ALUSrcD_reg;
     reg [2:0] ALUControlD_reg;
     reg [31:0] RD1D_reg, RD2D_reg, PCD_reg, ImmExtD_reg, PCPlus4D_reg;
-    reg [4:0] RdD;
+    reg [4:0] RdD, Rs1D, Rs2D;
     
     Control_Unit Control_Unit(
         .op(InstrD[6:0]),
@@ -67,6 +67,8 @@ module Decode_Cycle(
             ImmExtD_reg <= 32'd0;
             PCPlus4D_reg <= 32'd0;
             RdD <= 5'd0;
+            Rs1D <= 5'd0;
+            Rs2D <= 5'd0;
         end
         else begin
             RegWriteD_reg <= RegWriteD;
@@ -81,6 +83,8 @@ module Decode_Cycle(
             ImmExtD_reg <= ImmExtD;
             PCPlus4D_reg <= PCPlus4D;
             RdD <= InstrD[11:7];
+            Rs1D <= InstrD[19:15];
+            Rs2D <= InstrD[24:20];
         end
     end
     
@@ -96,5 +100,7 @@ module Decode_Cycle(
     assign ImmExtE = ImmExtD_reg;
     assign PCPlus4E = PCPlus4D_reg;
     assign RdE = RdD;
+    assign Rs1E = Rs1D;
+    assign Rs2E = Rs2D;
     
 endmodule
