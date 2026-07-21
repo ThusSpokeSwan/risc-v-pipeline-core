@@ -2,11 +2,13 @@
 
 module Execute_Cycle(
     input clk, rst,
-    input RegWriteE, ResultSrcE, MemWriteE, BranchE, ALUSrcE,
+    input RegWriteE, MemWriteE, BranchE, JumpE, ALUSrcE,
+    input [1:0] ResultSrcE,
     input [2:0] ALUControlE, ForwardAE, ForwardBE,
     input [31:0] RD1E, RD2E, PCE, ImmExtE, PCPlus4E, ResultW,
     input [4:0] RdE,
-    output RegWriteM, ResultSrcM, MemWriteM, PCSrcE,
+    output RegWriteM, MemWriteM, PCSrcE,
+    output [1:0] ResultSrcM,
     output [31:0] ALUResultM, WriteDataM, PCPlus4M, PCTargetE,
     output [4:0] RdM
     );
@@ -14,7 +16,8 @@ module Execute_Cycle(
     wire [31:0] SrcAE, SrcBE, SrcBE_interim ,ALUResultE;
     wire ZeroE;
 
-    reg RegWriteE_reg, ResultSrcE_reg, MemWriteE_reg;
+    reg RegWriteE_reg, MemWriteE_reg;
+    reg [1:0] ResultSrcE_reg;
     reg [4:0] RdE_reg;
     reg[31:0] ALUResultE_reg, WriteDataE, PCPlus4E_reg;    
         
@@ -81,7 +84,7 @@ module Execute_Cycle(
         end
     end
     
-    assign PCSrcE = ZeroE && BranchE;
+    assign PCSrcE = (ZeroE && BranchE) || JumpE;
     assign RegWriteM = RegWriteE_reg;
     assign ResultSrcM = ResultSrcE_reg;
     assign MemWriteM = MemWriteE_reg;

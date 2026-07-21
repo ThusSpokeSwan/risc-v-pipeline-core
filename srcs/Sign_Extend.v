@@ -11,6 +11,7 @@ module Sign_Extend(
             2'b00: ImmExt = {{20{Inst[31]}}, Inst[31:20]}; // I-type
             2'b01: ImmExt = {{20{Inst[31]}}, Inst[31:25], Inst[11:7]}; // S-Type
             2'b10: ImmExt = {{19{Inst[31]}}, Inst[31], Inst[7], Inst[30:25], Inst[11:8], 1'b0}; // B-Type (BEQ)
+            2'b11: ImmExt = {{12{Inst[31]}}, Inst[19:12], Inst[20], Inst[30:21], 1'b0}; // J-Type (JAL)
             default: ImmExt = 32'b0;
         endcase
     end     

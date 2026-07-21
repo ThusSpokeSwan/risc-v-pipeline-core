@@ -4,18 +4,20 @@ module Decode_Cycle(
     input clk, rst, RegWriteW,
     input [4:0] RDW,
     input [31:0] ResultW, InstrD, PCD, PCPlus4D,
-    output RegWriteE, ResultSrcE, MemWriteE, BranchE, ALUSrcE,
+    output RegWriteE, MemWriteE, BranchE, JumpE, ALUSrcE,
+    output [1:0] ResultSrcE,
     output [2:0] ALUControlE,
     output [31:0] RD1E, RD2E, PCE, ImmExtE, PCPlus4E,
     output [4:0] RdE, Rs1E, Rs2E
     );
     
-    wire BranchD, ResultSrcD, MemWriteD, ALUSrcD, RegWriteD;
-    wire [1:0] ImmSrcD;
+    wire BranchD, JumpD, MemWriteD, ALUSrcD, RegWriteD;
+    wire [1:0] ImmSrcD, ResultSrcD;
     wire [2:0] ALUControlD;
     wire [31:0] RD1D, RD2D, ImmExtD;
     
-    reg RegWriteD_reg, ResultSrcD_reg, MemWriteD_reg, BranchD_reg, ALUSrcD_reg;
+    reg RegWriteD_reg, MemWriteD_reg, BranchD_reg, JumpD_reg, ALUSrcD_reg;
+    reg [1:0] ResultSrcD_reg;
     reg [2:0] ALUControlD_reg;
     reg [31:0] RD1D_reg, RD2D_reg, PCD_reg, ImmExtD_reg, PCPlus4D_reg;
     reg [4:0] RdD, Rs1D, Rs2D;
@@ -27,6 +29,7 @@ module Decode_Cycle(
         .z(),
         .PCSrc(),
         .branch(BranchD),
+        .jump(JumpD),
         .ResultSrc(ResultSrcD),
         .MemWrite(MemWriteD),
         .ALUSrc(ALUSrcD),
@@ -56,9 +59,10 @@ module Decode_Cycle(
     always @(posedge clk) begin
         if (rst) begin
             RegWriteD_reg <= 1'd0;
-            ResultSrcD_reg <= 1'd0;
+            ResultSrcD_reg <= 2'd00;
             MemWriteD_reg <= 1'd0;
             BranchD_reg <= 1'd0;
+            JumpD_reg <= 1'd0;
             ALUSrcD_reg <= 1'd0;
             ALUControlD_reg <= 3'd0;
             RD1D_reg <= 32'd0;
@@ -75,6 +79,7 @@ module Decode_Cycle(
             ResultSrcD_reg <= ResultSrcD;
             MemWriteD_reg <= MemWriteD;
             BranchD_reg <= BranchD;
+            JumpD_reg <= JumpD;
             ALUSrcD_reg <= ALUSrcD;
             ALUControlD_reg <= ALUControlD;
             RD1D_reg <= RD1D;
@@ -92,6 +97,7 @@ module Decode_Cycle(
     assign ResultSrcE = ResultSrcD_reg;
     assign MemWriteE = MemWriteD_reg;
     assign BranchE = BranchD_reg;
+    assign JumpE = JumpD_reg;
     assign ALUSrcE = ALUSrcD_reg;
     assign ALUControlE = ALUControlD_reg;
     assign RD1E = RD1D_reg;

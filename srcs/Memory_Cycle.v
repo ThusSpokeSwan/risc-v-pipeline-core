@@ -2,10 +2,12 @@
 
 module Memory_Cycle(
     input clk, rst,
-    input RegWriteM, ResultSrcM, MemWriteM, PCSrcE,
+    input RegWriteM, MemWriteM, PCSrcE,
+    input [1:0] ResultSrcM,
     input [31:0] ALUResultM, WriteDataM, PCPlus4M, PCTargetE,
     input [4:0] RdM,
-    output RegWriteW, ResultSrcW,
+    output RegWriteW,
+    output [1:0] ResultSrcW,
     output [31:0] ReadDataW, PCPlus4W, ALUResultW,
     output [4:0] RdW
     );
@@ -14,10 +16,11 @@ module Memory_Cycle(
     
     reg [31:0] ReadDataM_reg, ALUResultM_reg, PCPlus4M_reg;
     reg [4:0] RdM_reg;
-    reg RegWriteM_reg, ResultSrcM_reg;
+    reg RegWriteM_reg; 
+    reg [1:0] ResultSrcM_reg;
     
     Data_Memory Data_Memory(
-        .clk(),
+        .clk(clk),
         .rst(rst),
         .WE(MemWriteM),
         .A(ALUResultM),
@@ -32,7 +35,7 @@ module Memory_Cycle(
             PCPlus4M_reg <= 32'd0;
             RdM_reg <= 5'd0;
             RegWriteM_reg <= 1'd0;
-            ResultSrcM_reg <= 1'd0;
+            ResultSrcM_reg <= 2'd00;
         end
         else begin
             ReadDataM_reg <= ReadDataM;

@@ -9,7 +9,7 @@ module Register_File(
     
     reg [31:0] Register [31:0];
     
-    always @(posedge clk)
+    always @(negedge clk)
     begin
         if (WE && A3 != 5'd0)
             Register[A3] <= WD;
